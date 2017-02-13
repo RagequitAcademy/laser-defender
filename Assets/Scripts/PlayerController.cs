@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour {
 	public float padding = 1f;
 	public GameObject projectile;
 	public float firingRate = 0.2f;
+	public float health = 250;
+	public AudioClip playerFires;
 
 	float xmin, xmax;
 
@@ -43,5 +45,23 @@ public class PlayerController : MonoBehaviour {
 
 	void shootLaser () {
 		GameObject laser = Instantiate (projectile, transform.position, Quaternion.identity) as GameObject;
+		AudioSource.PlayClipAtPoint (playerFires, transform.position);
+	}
+
+	void OnTriggerEnter2D(Collider2D col) {
+
+		Debug.Log ("Player hit!");
+		enemyLaser missile = col.gameObject.GetComponent<enemyLaser>();
+
+		if (missile) {
+			health -= missile.GetDamage ();
+			missile.Hit();
+
+			if (health <= 0) {
+				Destroy(gameObject);
+			}
+
+			Debug.Log ("Hit by a projectile.");
+		}
 	}
 }
